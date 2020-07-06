@@ -1,13 +1,16 @@
 const express = require('express');
 const morgan = require('morgan');
+const bodyParser = require('body-parser');
 const cors = require('cors');
+
+const app = express();
 
 // config dotenv
 require('dotenv').config({
   path: './config/config.env'
 });
 
-const app = express();
+app.use(bodyParser.json());
 
 const authRouter = require('./routes/auth.route');
 
