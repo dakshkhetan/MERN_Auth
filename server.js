@@ -9,6 +9,8 @@ require('dotenv').config({
 
 const app = express();
 
+const authRouter = require('./routes/auth.route');
+
 // dev middleware
 if (process.env.NODE_ENV === 'development') {
   app.use(
@@ -18,6 +20,8 @@ if (process.env.NODE_ENV === 'development') {
   );
   app.use(morgan('dev'));
 }
+
+app.use('/api', authRouter);
 
 app.use((req, res) => {
   res.status(404).json({
