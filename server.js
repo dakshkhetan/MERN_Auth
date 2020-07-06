@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const connectDB = require('./config/db');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
@@ -9,6 +10,9 @@ const app = express();
 require('dotenv').config({
   path: './config/config.env'
 });
+
+// connect to database
+connectDB();
 
 app.use(bodyParser.json());
 
