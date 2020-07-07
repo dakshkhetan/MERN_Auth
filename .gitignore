@@ -21,6 +21,7 @@
 /client/.env.production.local
 
 .env
+config/config.env
 
 /client/npm-debug.log*
 /client/yarn-debug.log*
