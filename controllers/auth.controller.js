@@ -73,3 +73,47 @@ exports.registerController = (req, res) => {
       });
   }
 };
+
+exports.activationController = (req, res) => {
+  const { token } = req.body;
+
+  if (token) {
+    // verify token if expired, valid or invalid
+    jwt.verify(token, process.env.JWT_ACCOUNT_ACTIVATION, (err, decoded) => {
+      if (err) {
+        console.log('Activation error');
+        return res.status(401).json({
+          errors: 'Link Expired. Signup again.'
+        });
+      } else {
+        const { name, email, password } = jwt.decode(token);
+
+        const user = new User({
+          name,
+          email,
+          password
+        });
+
+        // save user to database
+        user.save((err, user) => {
+          if (err) {
+            console.log('Error in saving user', errorHandler(err));
+            return res.status(401).json({
+              errors: errorHandler(err)
+            });
+          } else {
+            return res.json({
+              success: true,
+              message: 'Signup success',
+              user
+            });
+          }
+        });
+      }
+    });
+  } else {
+    return res.json({
+      message: 'Error occurred. Please try again.'
+    });
+  }
+};
