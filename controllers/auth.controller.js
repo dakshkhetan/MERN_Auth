@@ -8,6 +8,8 @@ const { validationResult } = require('express-validator');
 const { OAuth2Client } = require('google-auth-library');
 const sgMail = require('@sendgrid/mail');
 
+const { errorHandler } = require('../helpers/dbErrorHandling');
+
 sgMail.setApiKey(process.env.MAIL_KEY);
 
 exports.registerController = (req, res) => {
@@ -66,7 +68,7 @@ exports.registerController = (req, res) => {
       .catch((err) => {
         return res.status(400).json({
           success: false,
-          errors: err
+          errors: errorHandler(err)
         });
       });
   }
