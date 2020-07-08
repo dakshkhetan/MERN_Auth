@@ -7,6 +7,7 @@ import Login from './screens/Login';
 import Register from './screens/Register';
 import Activate from './screens/Activate';
 import ForgetPassword from './screens/ForgetPassword';
+import ResetPassword from './screens/ResetPassword';
 
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -29,6 +30,11 @@ ReactDOM.render(
         path='/users/password/forget'
         exact
         render={(props) => <ForgetPassword {...props} />}
+      />
+      <Route
+        path='/users/password/reset/:token'
+        exact
+        render={(props) => <ResetPassword {...props} />}
       />
     </Switch>
   </BrowserRouter>,

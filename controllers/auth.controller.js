@@ -258,7 +258,7 @@ exports.resetPasswordController = (req, res) => {
         (err, decoded) => {
           if (err) {
             return res.status(400).json({
-              error: 'Reset link expired. Try again.'
+              error: 'Reset link expired.'
             });
           }
 
