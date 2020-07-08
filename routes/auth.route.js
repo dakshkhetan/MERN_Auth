@@ -4,7 +4,8 @@ const router = express.Router();
 const {
   signinController,
   registerController,
-  activationController
+  activationController,
+  forgotPasswordController
 } = require('../controllers/auth.controller');
 
 const {
@@ -17,5 +18,7 @@ const {
 router.post('/login', validLogin, signinController);
 router.post('/register', validSign, registerController);
 router.post('/activation', activationController);
+
+router.put('/forgotpassword', forgotPasswordValidator, forgotPasswordController);
 
 module.exports = router;
