@@ -25,7 +25,7 @@ const userScheama = new mongoose.Schema(
       type: String,
       default: 'subscriber'
     },
-    resetPasswordLink: {
+    resetPasswordToken: {
       data: String,
       default: ''
     }

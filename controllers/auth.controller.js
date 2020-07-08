@@ -209,7 +209,7 @@ exports.forgotPasswordController = (req, res) => {
 
       return user.updateOne(
         {
-          resetPasswordLink: token
+          resetPasswordToken: token
         },
         (err, success) => {
           if (err) {
@@ -236,5 +236,62 @@ exports.forgotPasswordController = (req, res) => {
         }
       );
     });
+  }
+};
+
+exports.resetPasswordController = (req, res) => {
+  const { newPassword, resetPasswordToken } = req.body;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const firstError = errors.array().map((error) => error.msg)[0];
+    return res.status(422).json({
+      errors: firstError
+    });
+  } else {
+    if (resetPasswordToken) {
+      // verify token
+      jwt.verify(
+        resetPasswordToken,
+        process.env.JWT_RESET_PASSWORD,
+        (err, decoded) => {
+          if (err) {
+            return res.status(400).json({
+              error: 'Reset link expired. Try again.'
+            });
+          }
+
+          User.findOne({ resetPasswordToken }, (err, user) => {
+            if (err || !user) {
+              return res.status(400).json({
+                error: 'Something went wrong. Try again later.'
+              });
+            }
+
+            const updatedFields = {
+              password: newPassword,
+              resetPasswordToken: ''
+            };
+
+            // update 'user' object with new/updated data fields
+            user = _.extend(user, updatedFields);
+
+            // save updated user in database
+            user.save((err, result) => {
+              if (err) {
+                return res.status(400).json({
+                  error: 'Error resetting user password.'
+                });
+              }
+
+              return res.json({
+                message: `Password reset successful!`
+              });
+            });
+          });
+        }
+      );
+    }
   }
 };
