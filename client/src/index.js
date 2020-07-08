@@ -6,6 +6,7 @@ import App from './App';
 import Login from './screens/Login';
 import Register from './screens/Register';
 import Activate from './screens/Activate';
+import ForgetPassword from './screens/ForgetPassword';
 
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -23,6 +24,11 @@ ReactDOM.render(
         path='/users/activate/:token'
         exact
         render={(props) => <Activate {...props} />}
+      />
+      <Route
+        path='/users/password/forget'
+        exact
+        render={(props) => <ForgetPassword {...props} />}
       />
     </Switch>
   </BrowserRouter>,
