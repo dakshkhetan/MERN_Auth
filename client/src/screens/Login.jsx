@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import { GoogleLogin } from 'react-google-login';
 
 import loginSvg from '../assets/login.svg';
 import { authenticate, isAuth } from '../helpers/auth';
@@ -14,6 +15,33 @@ const Login = ({ history }) => {
   });
 
   const { email, password } = formData;
+
+  const sendGoogleToken = (tokenId) => {
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/googlelogin`, {
+        idToken: tokenId
+      })
+      .then((res) => {
+        console.log(res.data);
+        informParent(res);
+      })
+      .catch((error) => {
+        console.log('GOOGLE SIGNIN ERROR', error.response);
+      });
+  };
+
+  const informParent = (response) => {
+    authenticate(response, () => {
+      isAuth() && isAuth().role === 'admin'
+        ? history.push('/admin')
+        : history.push('/private');
+    });
+  };
+
+  const responseGoogle = (response) => {
+    console.log(response);
+    sendGoogleToken(response.tokenId);
+  };
 
   const handleChange = (text) => (e) => {
     setFormData({ ...formData, [text]: e.target.value });
@@ -38,11 +66,11 @@ const Login = ({ history }) => {
               password: '',
               textChange: 'Submitted'
             });
-            
+
             isAuth() && isAuth().role === 'admin'
-            ? history.push('/admin')
-            : history.push('/private');
-            
+              ? history.push('/admin')
+              : history.push('/private');
+
             toast.success(`Hey ${response.data.user.name}, Welcome back!`);
           });
         })
@@ -61,7 +89,7 @@ const Login = ({ history }) => {
       toast.error('Please fill in all fields');
     }
   };
-  
+
   return (
     <div className='min-h-screen bg-gray-100 text-gray-900 flex justify-center'>
       {isAuth() ? <Redirect to='/' /> : null}
@@ -77,6 +105,28 @@ const Login = ({ history }) => {
 
             <div className='w-full flex-1 mt-8 text-indigo-500'>
               <div className='flex flex-col items-center'>
+                <GoogleLogin
+                  clientId={`${process.env.REACT_APP_GOOGLE_CLIENT_ID}`}
+                  onSuccess={responseGoogle}
+                  onFailure={responseGoogle}
+                  cookiePolicy={'single_host_origin'}
+                  render={(renderProps) => (
+                    <button
+                      onClick={renderProps.onClick}
+                      disabled={renderProps.disabled}
+                      className='w-full max-w-xs font-bold shadow-sm rounded-lg py-3 
+                        bg-indigo-100 text-gray-800 flex items-center justify-center 
+                        transition-all duration-300 ease-in-out focus:outline-none hover:shadow 
+                        focus:shadow-sm focus:shadow-outline'
+                    >
+                      <div className='p-2 rounded-full'>
+                        <i className='fab fa-google' />
+                      </div>
+                      <span className='ml-0'>Sign In with Google</span>
+                    </button>
+                  )}
+                />
+
                 <a
                   className='w-full max-w-xs font-bold shadow-sm rounded-lg py-3 
                     bg-indigo-100 text-gray-800 flex items-center justify-center transition-all 
@@ -86,7 +136,7 @@ const Login = ({ history }) => {
                   target='_self'
                 >
                   <i className='fas fa-user-plus fa 1x w-6 -ml-2 text-indigo-500' />
-                  <span className='ml-4'>Sign Up</span>
+                  <span className='ml-1'>Sign Up</span>
                 </a>
               </div>
 
@@ -129,7 +179,7 @@ const Login = ({ history }) => {
                     flex items-center justify-center focus:shadow-outline focus:outline-none'
                 >
                   <i className='fas fa-sign-in-alt w-6 -ml-2' />
-                  <span className='ml-3'>Sign In</span>
+                  <span className='ml-1'>Sign In</span>
                 </button>
               </form>
             </div>
