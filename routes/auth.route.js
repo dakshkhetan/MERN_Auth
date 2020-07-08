@@ -6,7 +6,8 @@ const {
   registerController,
   activationController,
   forgotPasswordController,
-  resetPasswordController
+  resetPasswordController,
+  googleController
 } = require('../controllers/auth.controller');
 
 const {
@@ -22,5 +23,7 @@ router.post('/activation', activationController);
 
 router.put('/forgotpassword', forgotPasswordValidator, forgotPasswordController);
 router.put('/resetpassword', resetPasswordValidator, resetPasswordController);
+
+router.post('/googlelogin', googleController);
 
 module.exports = router;

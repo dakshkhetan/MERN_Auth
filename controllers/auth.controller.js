@@ -5,8 +5,8 @@ const jwt = require('jsonwebtoken');
 const fetch = require('node-fetch');
 const _ = require('lodash');
 const { validationResult } = require('express-validator');
-const { OAuth2Client } = require('google-auth-library');
 const sgMail = require('@sendgrid/mail');
+const { OAuth2Client } = require('google-auth-library');
 
 const { errorHandler } = require('../helpers/dbErrorHandling');
 
@@ -278,7 +278,7 @@ exports.resetPasswordController = (req, res) => {
             user = _.extend(user, updatedFields);
 
             // save updated user in database
-            user.save((err, result) => {
+            user.save((err, userData) => {
               if (err) {
                 return res.status(400).json({
                   error: 'Error resetting user password.'
@@ -294,4 +294,87 @@ exports.resetPasswordController = (req, res) => {
       );
     }
   }
+};
+
+// sign-in with Google 
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+exports.googleController = (req, res) => {
+  const { idToken } = req.body;
+
+  // verify token
+  client
+    .verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID
+    })
+    .then((response) => {
+      // console.log('GOOGLE LOGIN RESPONSE',response)
+      const { email_verified, name, email } = response.payload;
+
+      // check if email is verified
+      if (email_verified) {
+        // check if email already exists in database
+        User.findOne({ email }).exec((err, user) => {
+          if (user) {
+            // generate token
+            const token = jwt.sign(
+              {
+                _id: user._id
+              },
+              process.env.JWT_SECRET,
+              { expiresIn: '7d' }
+            );
+
+            const { _id, email, name, role } = user;
+            // send token & user data as response to client
+            return res.json({
+              token,
+              user: {
+                _id,
+                email,
+                name,
+                role
+              }
+            });
+          } else {
+            // generate password for user
+            let password = email + process.env.JWT_SECRET;
+            // create user with credentials
+            user = new User({ name, email, password });
+            // save user in database
+            user.save((err, userData) => {
+              if (err) {
+                console.log('ERROR GOOGLE LOGIN ON USER SAVE', err);
+                return res.status(400).json({
+                  error: 'User sign-up failed with Google.'
+                });
+              }
+
+              // generate token
+              const token = jwt.sign(
+                { _id: userData._id },
+                process.env.JWT_SECRET,
+                { expiresIn: '7d' }
+              );
+
+              const { _id, email, name, role } = userData;
+              // send token & user data as response to client
+              return res.json({
+                token,
+                user: {
+                  _id,
+                  email,
+                  name,
+                  role
+                }
+              });
+            });
+          }
+        });
+      } else {
+        return res.status(400).json({
+          error: 'Sign-in with Google failed. Try again.'
+        });
+      }
+    });
 };
