@@ -4,9 +4,9 @@ import { Redirect } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
 import loginSvg from '../assets/login.svg';
-import { isAuth } from '../helpers/auth';
+import { authenticate, isAuth } from '../helpers/auth';
 
-const Login = () => {
+const Login = ({ history }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -30,16 +30,21 @@ const Login = () => {
           email,
           password
         })
-        .then((res) => {
-          setFormData({
-            ...formData,
-            email: '',
-            password: '',
-            textChange: 'Submitted'
+        .then((response) => {
+          authenticate(response, () => {
+            setFormData({
+              ...formData,
+              email: '',
+              password: '',
+              textChange: 'Submitted'
+            });
+            
+            isAuth() && isAuth().role === 'admin'
+            ? history.push('/admin')
+            : history.push('/private');
+            
+            toast.success(`Hey ${response.data.user.name}, Welcome back!`);
           });
-
-          console.log(res.data);
-          toast.success(`Signed in successfully!`);
         })
         .catch((err) => {
           setFormData({
