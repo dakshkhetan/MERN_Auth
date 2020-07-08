@@ -117,3 +117,52 @@ exports.activationController = (req, res) => {
     });
   }
 };
+
+exports.signinController = (req, res) => {
+  const { email, password } = req.body;
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const firstError = errors.array().map((error) => error.msg)[0];
+    return res.status(422).json({
+      errors: firstError
+    });
+  } else {
+    // check if user exist
+    User.findOne({ email }).exec((err, user) => {
+      if (err || !user) {
+        return res.status(400).json({
+          errors: 'User with that email does not exist. Please sign-up first.'
+        });
+      }
+      // check authentication
+      if (!user.authenticate(password)) {
+        return res.status(400).json({
+          errors: 'Incorrect email or password.'
+        });
+      }
+      // generate token & send to client
+      const token = jwt.sign(
+        {
+          _id: user._id
+        },
+        process.env.JWT_SECRET,
+        {
+          // set it to 30d for 'remember me' feature (if present)
+          expiresIn: '7d'
+        }
+      );
+
+      const { _id, name, email, role } = user;
+      return res.json({
+        token,
+        user: {
+          _id,
+          name,
+          email,
+          role
+        }
+      });
+    });
+  }
+};

@@ -107,7 +107,6 @@ const Activate = ({ match }) => {
           ></div>
         </div>
       </div>
-      ;
     </div>
   );
 };
