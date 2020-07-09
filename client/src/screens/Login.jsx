@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { GoogleLogin } from 'react-google-login';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 
 import loginSvg from '../assets/login.svg';
 import { authenticate, isAuth } from '../helpers/auth';
@@ -30,6 +31,21 @@ const Login = ({ history }) => {
       });
   };
 
+  const sendFacebookToken = (userID, accessToken) => {
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/facebooklogin`, {
+        userID,
+        accessToken
+      })
+      .then((res) => {
+        console.log(res.data);
+        informParent(res);
+      })
+      .catch((error) => {
+        console.log('FACEBOOK SIGNIN ERROR', error.response);
+      });
+  };
+
   const informParent = (response) => {
     authenticate(response, () => {
       isAuth() && isAuth().role === 'admin'
@@ -41,6 +57,11 @@ const Login = ({ history }) => {
   const responseGoogle = (response) => {
     console.log(response);
     sendGoogleToken(response.tokenId);
+  };
+
+  const responseFacebook = (response) => {
+    console.log(response);
+    sendFacebookToken(response.userID, response.accessToken);
   };
 
   const handleChange = (text) => (e) => {
@@ -123,6 +144,26 @@ const Login = ({ history }) => {
                         <i className='fab fa-google' />
                       </div>
                       <span className='ml-0'>Sign In with Google</span>
+                    </button>
+                  )}
+                />
+
+                <FacebookLogin
+                  appId={`${process.env.REACT_APP_FACEBOOK_CLIENT_ID}`}
+                  autoLoad={false}
+                  callback={responseFacebook}
+                  render={(renderProps) => (
+                    <button
+                      onClick={renderProps.onClick}
+                      className='w-full max-w-xs font-bold shadow-sm rounded-lg py-3 
+                        bg-indigo-100 text-gray-800 flex items-center justify-center 
+                        transition-all duration-300 ease-in-out focus:outline-none hover:shadow 
+                        focus:shadow-sm focus:shadow-outline mt-5'
+                    >
+                      <div className='p-2 rounded-full'>
+                        <i className='fab fa-facebook' />
+                      </div>
+                      <span className='ml-0'>Sign In with Facebook</span>
                     </button>
                   )}
                 />
