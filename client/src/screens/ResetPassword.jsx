@@ -54,7 +54,7 @@ const ResetPassword = ({ match }) => {
             toast.success(response.data.message);
           })
           .catch((err) => {
-            // console.log(err.response);
+            console.log(err.response.data);
             toast.error(err.response.data.error);
           });
       } else {

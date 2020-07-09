@@ -39,7 +39,7 @@ const ForgetPassword = () => {
           toast.success(`Please check your email.`);
         })
         .catch((err) => {
-          console.log(err.response);
+          console.log(err.response.data);
           toast.error(err.response.data.error);
         });
     } else {

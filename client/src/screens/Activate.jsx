@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
-import { Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
 import welcomeSvg from '../assets/welcome.svg';
@@ -51,6 +51,7 @@ const Activate = ({ match }) => {
     <div className='min-h-screen bg-gray-100 text-gray-900 flex justify-center'>
       {isAuth() ? <Redirect to='/' /> : null}
       <ToastContainer />
+
       <div
         className='max-w-screen-xl m-0 sm:m-20 bg-white shadow sm:rounded-lg flex 
           justify-center flex-1'
@@ -69,37 +70,39 @@ const Activate = ({ match }) => {
                 <button
                   type='submit'
                   className='mt-5 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full 
-                    py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out 
+                    px-8 py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out 
                     flex items-center justify-center focus:shadow-outline focus:outline-none'
                 >
                   <i className='fas fa-user-plus fa 1x w-6 -ml-2' />
                   <span className='ml-2'>Activate your account</span>
                 </button>
               </div>
-              <div className='my-12 border-b text-center'>
+
+              <div className='mt-12 mb-10 border-b text-center'>
                 <div
                   className='leading-none px-2 inline-block text-sm text-gray-600 
-                  tracking-wide font-medium bg-white transform translate-y-1/2'
+                    tracking-wide font-medium bg-white transform translate-y-1/2'
                 >
                   Or sign up again
                 </div>
               </div>
+
               <div className='flex flex-col items-center'>
-                <a
+                <Link
+                  to='/register'
                   className='w-full max-w-xs font-bold shadow-sm rounded-lg py-3 
                     bg-indigo-100 text-gray-800 flex items-center justify-center transition-all 
                     duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm 
                     focus:shadow-outline mt-5'
-                  href='/register'
-                  target='_self'
                 >
                   <i className='fas fa-sign-in-alt fa 1x w-5 -ml-2 text-indigo-500' />
                   <span className='ml-1'>Sign Up</span>
-                </a>
+                </Link>
               </div>
             </form>
           </div>
         </div>
+
         <div className='flex-1 bg-indigo-100 text-center hidden lg:flex'>
           <div
             className='m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat'
