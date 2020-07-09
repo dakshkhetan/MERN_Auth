@@ -19,13 +19,17 @@ const Activate = ({ match }) => {
     if (token) {
       try {
         let { name } = jwt.decode(token);
-        setFormData({ ...formData, name, token });
+        setFormData((formData) => ({
+          ...formData,
+          name,
+          token
+        }));
       } catch (error) {
         // console.log(error.message);
         toast.error('Invalid link!');
       }
     }
-  }, [match.params]);
+  }, [match.params.token]);
 
   const { name, token } = formData;
 

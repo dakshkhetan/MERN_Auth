@@ -17,12 +17,12 @@ const ResetPassword = ({ match }) => {
   useEffect(() => {
     let token = match.params.token;
     if (token) {
-      setFormData({
+      setFormData((formData) => ({
         ...formData,
         token
-      });
+      }));
     }
-  }, []);
+  }, [match.params.token]);
 
   const handleChange = (text) => (e) => {
     setFormData({ ...formData, [text]: e.target.value });
