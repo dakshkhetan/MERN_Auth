@@ -112,8 +112,8 @@ exports.activationController = (req, res) => {
       }
     });
   } else {
-    return res.json({
-      message: 'Error occurred. Please try again.'
+    return res.status(401).json({
+      errors: 'Invalid link!'
     });
   }
 };

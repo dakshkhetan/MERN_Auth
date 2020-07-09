@@ -16,13 +16,15 @@ const Activate = ({ match }) => {
 
   useEffect(() => {
     let token = match.params.token;
-    let { name } = jwt.decode(token);
-
     if (token) {
-      setFormData({ ...formData, name, token });
+      try {
+        let { name } = jwt.decode(token);
+        setFormData({ ...formData, name, token });
+      } catch (error) {
+        // console.log(error.message);
+        toast.error('Invalid link!');
+      }
     }
-
-    console.log(token, name);
   }, [match.params]);
 
   const { name, token } = formData;
