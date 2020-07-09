@@ -342,7 +342,7 @@ exports.googleController = (req, res) => {
             // create user with credentials
             user = new User({ name, email, password });
             // save user in database
-            user.save((err, userData) => {
+            user.save((err, savedUser) => {
               if (err) {
                 console.log('ERROR GOOGLE LOGIN ON USER SAVE', err);
                 return res.status(400).json({
@@ -352,12 +352,12 @@ exports.googleController = (req, res) => {
 
               // generate token
               const token = jwt.sign(
-                { _id: userData._id },
+                { _id: savedUser._id },
                 process.env.JWT_SECRET,
                 { expiresIn: '7d' }
               );
 
-              const { _id, email, name, role } = userData;
+              const { _id, email, name, role } = savedUser;
               // send token & user data as response to client
               return res.json({
                 token,
@@ -377,4 +377,86 @@ exports.googleController = (req, res) => {
         });
       }
     });
+};
+
+exports.facebookController = (req, res) => {
+  const { userID, accessToken } = req.body;
+
+  const url = `https://graph.facebook.com/v2.11/${userID}/?fields=id,name,email&access_token=${accessToken}`;
+
+  return (
+    fetch(url, { method: 'GET' })
+      .then((response) => response.json())
+      // .then(response => console.log(response))
+      .then((response) => {
+        const { email, name } = response;
+
+        // check if email already exists in database
+        User.findOne({ email }).exec((err, user) => {
+          // user with that email already exists in database
+          if (user) {
+            // generate token
+            const token = jwt.sign(
+              {
+                _id: user._id
+              },
+              process.env.JWT_SECRET,
+              { expiresIn: '7d' }
+            );
+
+            const { _id, email, name, role } = user;
+            // send token & user data as response to client
+            return res.json({
+              token,
+              user: {
+                _id,
+                email,
+                name,
+                role
+              }
+            });
+          }
+          // user does not exist with that email in database
+          else {
+            // generate password for user
+            let password = email + process.env.JWT_SECRET;
+            // create user with credentials
+            user = new User({ name, email, password });
+            // save user in database
+            user.save((err, savedUser) => {
+              if (err) {
+                console.log('ERROR FACEBOOK LOGIN ON USER SAVE', err);
+                return res.status(400).json({
+                  error: 'User sign-up failed with Facebook'
+                });
+              }
+
+              // generate token
+              const token = jwt.sign(
+                { _id: savedUser._id },
+                process.env.JWT_SECRET,
+                { expiresIn: '7d' }
+              );
+
+              const { _id, email, name, role } = savedUser;
+              // send token & user data as response to client
+              return res.json({
+                token,
+                user: {
+                  _id,
+                  email,
+                  name,
+                  role
+                }
+              });
+            });
+          }
+        });
+      })
+      .catch((error) => {
+        res.json({
+          error: 'Sign-in with Facebook failed. Try again.'
+        });
+      })
+  );
 };

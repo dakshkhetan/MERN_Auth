@@ -7,7 +7,8 @@ const {
   activationController,
   forgotPasswordController,
   resetPasswordController,
-  googleController
+  googleController,
+  facebookController
 } = require('../controllers/auth.controller');
 
 const {
@@ -25,5 +26,6 @@ router.put('/forgotpassword', forgotPasswordValidator, forgotPasswordController)
 router.put('/resetpassword', resetPasswordValidator, resetPasswordController);
 
 router.post('/googlelogin', googleController);
+router.post('/facebooklogin', facebookController);
 
 module.exports = router;
