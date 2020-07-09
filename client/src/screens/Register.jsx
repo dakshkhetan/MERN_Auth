@@ -25,11 +25,11 @@ const Register = ({ history }) => {
         idToken: tokenId
       })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         informParent(res);
       })
       .catch((error) => {
-        console.log('GOOGLE SIGNIN ERROR', error.response);
+        console.log('GOOGLE SIGNIN ERROR', error.response.data.error);
       });
   };
 
@@ -44,7 +44,7 @@ const Register = ({ history }) => {
         informParent(res);
       })
       .catch((error) => {
-        console.log('FACEBOOK SIGNIN ERROR', error.response);
+        console.log('FACEBOOK SIGNIN ERROR', error.response.data.error);
       });
   };
 
@@ -57,12 +57,12 @@ const Register = ({ history }) => {
   };
 
   const responseGoogle = (response) => {
-    console.log(response);
+    console.log('GOOGLE LOGIN RESPONSE', response);
     sendGoogleToken(response.tokenId);
   };
 
   const responseFacebook = (response) => {
-    console.log(response);
+    console.log('FACEBOOK LOGIN RESPONSE', response);
     sendFacebookToken(response.userID, response.accessToken);
   };
 
@@ -106,7 +106,7 @@ const Register = ({ history }) => {
               textChange: 'Sign Up'
             });
 
-            toast.error(err.response.data.errors);
+            toast.error(err.response.data.error);
           });
       } else {
         toast.error("Passwords don't match!");
@@ -163,7 +163,7 @@ const Register = ({ history }) => {
                   onChange={handleChange('password1')}
                   value={password1}
                 />
-                
+
                 <input
                   className='w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border 
                     border-gray-200 placeholder-gray-500 text-sm focus:outline-none 

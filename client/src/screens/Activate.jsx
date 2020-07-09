@@ -18,6 +18,8 @@ const Activate = ({ match }) => {
     let token = match.params.token;
     if (token) {
       try {
+        // we are also decoding token on front-end
+        // in order to display the user name on page
         let { name } = jwt.decode(token);
         setFormData((formData) => ({
           ...formData,
@@ -49,7 +51,7 @@ const Activate = ({ match }) => {
         toast.success(res.data.message);
       })
       .catch((err) => {
-        toast.error(err.response.data.errors);
+        toast.error(err.response.data.error);
       });
   };
 

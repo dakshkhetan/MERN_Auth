@@ -23,11 +23,11 @@ const Login = ({ history }) => {
         idToken: tokenId
       })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         informParent(res);
       })
       .catch((error) => {
-        console.log('GOOGLE SIGNIN ERROR', error.response);
+        console.log('GOOGLE SIGNIN ERROR', error.response.data.error);
       });
   };
 
@@ -38,11 +38,11 @@ const Login = ({ history }) => {
         accessToken
       })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         informParent(res);
       })
       .catch((error) => {
-        console.log('FACEBOOK SIGNIN ERROR', error.response);
+        console.log('FACEBOOK SIGNIN ERROR', error.response.data.error);
       });
   };
 
@@ -55,12 +55,12 @@ const Login = ({ history }) => {
   };
 
   const responseGoogle = (response) => {
-    console.log(response);
+    console.log('GOOGLE LOGIN RESPONSE', response);
     sendGoogleToken(response.tokenId);
   };
 
   const responseFacebook = (response) => {
-    console.log(response);
+    console.log('FACEBOOK LOGIN RESPONSE', response);
     sendFacebookToken(response.userID, response.accessToken);
   };
 
@@ -103,8 +103,8 @@ const Login = ({ history }) => {
             textChange: 'Sign In'
           });
 
-          console.log(err.response);
-          toast.error(err.response.data.errors);
+          console.log(err.response.data);
+          toast.error(err.response.data.error);
         });
     } else {
       toast.error('Please fill in all fields');
@@ -222,7 +222,7 @@ const Login = ({ history }) => {
                   <i className='fas fa-sign-in-alt w-6 -ml-2' />
                   <span className='ml-1'>Sign In</span>
                 </button>
-                
+
                 <Link
                   to='/users/password/forget'
                   className='no-underline hover:underline text-indigo-500 text-sm text-right 

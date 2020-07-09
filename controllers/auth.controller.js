@@ -19,13 +19,13 @@ exports.registerController = (req, res) => {
   if (!errors.isEmpty()) {
     const firstError = errors.array().map((error) => error.msg)[0];
     return res.status(422).json({
-      errors: firstError
+      error: firstError
     });
   } else {
     User.findOne({ email }).exec((err, user) => {
       if (user) {
         return res.status(400).json({
-          errors: 'Email is taken'
+          error: 'Email already registered with some user.'
         });
       }
     });
@@ -68,7 +68,7 @@ exports.registerController = (req, res) => {
       .catch((err) => {
         return res.status(400).json({
           success: false,
-          errors: errorHandler(err)
+          error: errorHandler(err)
         });
       });
   }
@@ -81,9 +81,9 @@ exports.activationController = (req, res) => {
     // verify token if expired, valid or invalid
     jwt.verify(token, process.env.JWT_ACCOUNT_ACTIVATION, (err, decoded) => {
       if (err) {
-        console.log('Activation error');
+        console.log('Account activation error', err.message);
         return res.status(401).json({
-          errors: 'Link Expired. Signup again.'
+          error: 'Link Expired. Signup again.'
         });
       } else {
         const { name, email, password } = jwt.decode(token);
@@ -99,12 +99,12 @@ exports.activationController = (req, res) => {
           if (err) {
             console.log('Error in saving user', errorHandler(err));
             return res.status(401).json({
-              errors: errorHandler(err)
+              error: errorHandler(err)
             });
           } else {
             return res.json({
               success: true,
-              message: 'Signup success',
+              message: 'Signup successful',
               user
             });
           }
@@ -113,7 +113,7 @@ exports.activationController = (req, res) => {
     });
   } else {
     return res.status(401).json({
-      errors: 'Invalid link!'
+      error: 'Invalid link!'
     });
   }
 };
@@ -125,20 +125,20 @@ exports.signinController = (req, res) => {
   if (!errors.isEmpty()) {
     const firstError = errors.array().map((error) => error.msg)[0];
     return res.status(422).json({
-      errors: firstError
+      error: firstError
     });
   } else {
     // check if user exist
     User.findOne({ email }).exec((err, user) => {
       if (err || !user) {
         return res.status(400).json({
-          errors: 'User with that email does not exist. Please sign-up first.'
+          error: 'User with that email does not exist. Please sign-up first.'
         });
       }
       // check authentication
       if (!user.authenticate(password)) {
         return res.status(400).json({
-          errors: 'Incorrect email or password.'
+          error: 'Incorrect email or password.'
         });
       }
       // generate token & send to client
@@ -174,7 +174,7 @@ exports.forgotPasswordController = (req, res) => {
   if (!errors.isEmpty()) {
     const firstError = errors.array().map((error) => error.msg)[0];
     return res.status(422).json({
-      errors: firstError
+      error: firstError
     });
   } else {
     User.findOne({ email }).exec((err, user) => {
@@ -213,9 +213,10 @@ exports.forgotPasswordController = (req, res) => {
         },
         (err, success) => {
           if (err) {
-            console.log('RESET PASSWORD LINK ERROR', err);
+            console.log('RESET PASSWORD LINK ERROR', err.message);
             return res.status(400).json({
-              error: 'Database connection error on forgot password request.'
+              error:
+                'Database connection error on sending request. Try again later.'
             });
           } else {
             sgMail
@@ -227,9 +228,9 @@ exports.forgotPasswordController = (req, res) => {
                 });
               })
               .catch((err) => {
-                // console.log('SIGNUP EMAIL SENT ERROR', err)
-                return res.json({
-                  message: err.message
+                console.log('SIGNUP EMAIL SENT ERROR', err.message);
+                return res.status(400).json({
+                  error: err.message
                 });
               });
           }
@@ -247,7 +248,7 @@ exports.resetPasswordController = (req, res) => {
   if (!errors.isEmpty()) {
     const firstError = errors.array().map((error) => error.msg)[0];
     return res.status(422).json({
-      errors: firstError
+      error: firstError
     });
   } else {
     if (resetPasswordToken) {
@@ -258,7 +259,7 @@ exports.resetPasswordController = (req, res) => {
         (err, decoded) => {
           if (err) {
             return res.status(400).json({
-              error: 'Reset link expired.'
+              error: 'Password reset link expired.'
             });
           }
 
@@ -296,7 +297,7 @@ exports.resetPasswordController = (req, res) => {
   }
 };
 
-// sign-in with Google 
+// sign-in with Google
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 exports.googleController = (req, res) => {
   const { idToken } = req.body;
@@ -308,7 +309,7 @@ exports.googleController = (req, res) => {
       audience: process.env.GOOGLE_CLIENT_ID
     })
     .then((response) => {
-      // console.log('GOOGLE LOGIN RESPONSE',response)
+      console.log('GOOGLE LOGIN RESPONSE', response);
       const { email_verified, name, email } = response.payload;
 
       // check if email is verified
@@ -344,7 +345,7 @@ exports.googleController = (req, res) => {
             // save user in database
             user.save((err, savedUser) => {
               if (err) {
-                console.log('ERROR GOOGLE LOGIN ON USER SAVE', err);
+                console.log('ERROR GOOGLE LOGIN ON USER SAVE', err.message);
                 return res.status(400).json({
                   error: 'User sign-up failed with Google.'
                 });
@@ -389,6 +390,7 @@ exports.facebookController = (req, res) => {
       .then((response) => response.json())
       // .then(response => console.log(response))
       .then((response) => {
+        console.log(response);
         const { email, name } = response;
 
         // check if email already exists in database
@@ -425,9 +427,9 @@ exports.facebookController = (req, res) => {
             // save user in database
             user.save((err, savedUser) => {
               if (err) {
-                console.log('ERROR FACEBOOK LOGIN ON USER SAVE', err);
+                console.log('ERROR FACEBOOK LOGIN ON USER SAVE', err.message);
                 return res.status(400).json({
-                  error: 'User sign-up failed with Facebook'
+                  error: 'User sign-up failed with Facebook.'
                 });
               }
 
@@ -454,7 +456,7 @@ exports.facebookController = (req, res) => {
         });
       })
       .catch((error) => {
-        res.json({
+        res.status(400).json({
           error: 'Sign-in with Facebook failed. Try again.'
         });
       })
