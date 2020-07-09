@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { GoogleLogin } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
@@ -222,6 +222,13 @@ const Login = ({ history }) => {
                   <i className='fas fa-sign-in-alt w-6 -ml-2' />
                   <span className='ml-1'>Sign In</span>
                 </button>
+                <Link
+                  to='/users/password/forget'
+                  className='no-underline hover:underline text-indigo-500 text-sm text-right 
+                    absolute right-0 mt-3 pr-1'
+                >
+                  Forget Password?
+                </Link>
               </form>
             </div>
           </div>
