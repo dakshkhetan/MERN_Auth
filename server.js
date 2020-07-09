@@ -33,11 +33,11 @@ app.use('/api', authRouter);
 app.use((req, res) => {
   res.status(404).json({
     success: false,
-    msg: 'Page not founded'
+    message: 'Page not found'
   });
 });
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
