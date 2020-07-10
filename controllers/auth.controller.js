@@ -167,6 +167,12 @@ exports.signinController = (req, res) => {
   }
 };
 
+exports.requireSignin = expressJwt({
+  secret: process.env.JWT_SECRET
+  // the decoded JWT payload is available on the request via 'user' property
+  // i.e. we can access authenticated user data, eg: 'req.user._id'
+});
+
 exports.forgotPasswordController = (req, res) => {
   const { email } = req.body;
   const errors = validationResult(req);

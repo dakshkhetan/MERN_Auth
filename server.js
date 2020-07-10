@@ -17,6 +17,7 @@ connectDB();
 app.use(bodyParser.json());
 
 const authRouter = require('./routes/auth.route');
+const userRouter = require('./routes/user.route');
 
 // dev middleware
 if (process.env.NODE_ENV === 'development') {
@@ -29,6 +30,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use('/api', authRouter);
+app.use('/api', userRouter);
 
 app.use((req, res) => {
   res.status(404).json({
