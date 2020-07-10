@@ -17,10 +17,6 @@ const Admin = ({ history }) => {
 
   const { name, email, password, role, textChange } = formData;
 
-  useEffect(() => {
-    loadProfile();
-  }, []);
-
   const loadProfile = () => {
     const token = getCookie('token');
 
@@ -52,6 +48,8 @@ const Admin = ({ history }) => {
         }
       });
   };
+
+  useEffect(loadProfile, []);
 
   const handleChange = (text) => (e) => {
     setFormData({ ...formData, [text]: e.target.value });
