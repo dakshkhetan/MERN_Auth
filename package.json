@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "NODE_ENV=production node server",
-    "dev": "nodemon server"
+    "client": "cd client && yarn start",
+    "server": "nodemon server",
+    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"yarn client\""
   },
   "repository": {
     "type": "git",
@@ -34,5 +36,9 @@
     "mongoose": "^5.9.21",
     "morgan": "^1.10.0",
     "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "concurrently": "^5.2.0",
+    "nodemon": "^2.0.4"
   }
 }
