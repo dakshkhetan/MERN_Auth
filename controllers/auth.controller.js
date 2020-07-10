@@ -174,6 +174,27 @@ exports.requireSignin = expressJwt({
   // i.e. we can access authenticated user data, eg: 'req.user._id'
 });
 
+exports.adminMiddleware = (req, res, next) => {
+  User.findById({
+    _id: req.user._id
+  }).exec((err, user) => {
+    if (err || !user) {
+      return res.status(400).json({
+        error: 'User not found'
+      });
+    }
+
+    if (user.role !== 'admin') {
+      return res.status(400).json({
+        error: 'Admin resource. Access denied.'
+      });
+    }
+
+    req.profile = user;
+    next();
+  });
+};
+
 exports.forgotPasswordController = (req, res) => {
   const { email } = req.body;
   const errors = validationResult(req);
