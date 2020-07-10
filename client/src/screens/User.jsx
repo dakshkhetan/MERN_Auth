@@ -42,7 +42,8 @@ const User = ({ history }) => {
         });
       })
       .catch((err) => {
-        toast.error(`Error To Your Information ${err.response.statusText}`);
+        console.log(err.response.data);
+        toast.error(err.response.data.error);
 
         if (err.response.status === 401) {
           signout(() => {
@@ -60,7 +61,6 @@ const User = ({ history }) => {
     e.preventDefault();
 
     const token = getCookie('token');
-    console.log(token);
 
     setFormData({
       ...formData,
@@ -92,7 +92,13 @@ const User = ({ history }) => {
         });
       })
       .catch((err) => {
-        console.log(err.response);
+        setFormData({
+          ...formData,
+          textChange: 'Update'
+        });
+
+        console.log(err.response.data);
+        toast.error(err.response.data.error);
       });
   };
 

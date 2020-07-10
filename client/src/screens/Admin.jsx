@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
 import { isAuth, getCookie, updateUser, signout } from '../helpers/auth';
-import updateUserSvg from '../assests/update.svg';
+import updateUserSvg from '../assets/update.svg';
 
 const Admin = ({ history }) => {
   const [formData, setFormData] = useState({
@@ -42,7 +42,8 @@ const Admin = ({ history }) => {
         });
       })
       .catch((err) => {
-        toast.error(`Error To Your Information ${err.response.statusText}`);
+        console.log(err.response.data);
+        toast.error(err.response.data.error);
 
         if (err.response.status === 401) {
           signout(() => {
@@ -60,7 +61,6 @@ const Admin = ({ history }) => {
     e.preventDefault();
 
     const token = getCookie('token');
-    console.log(token);
 
     setFormData({
       ...formData,
@@ -92,7 +92,13 @@ const Admin = ({ history }) => {
         });
       })
       .catch((err) => {
-        console.log(err.response);
+        setFormData({
+          ...formData,
+          textChange: 'Update'
+        });
+
+        console.log(err.response.data);
+        toast.error(err.response.data.error);
       });
   };
 
