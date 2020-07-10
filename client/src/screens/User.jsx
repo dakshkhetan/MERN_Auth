@@ -165,8 +165,8 @@ const User = ({ history }) => {
                     py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out 
                     flex items-center justify-center focus:shadow-outline focus:outline-none'
                 >
-                  <i className='fas fa-user-plus fa 1x w-6  -ml-2' />
-                  <span className='ml-3'>{textChange}</span>
+                  <i className='fas fa-user-plus fa 1x w-5' />
+                  <span className='ml-2'>{textChange}</span>
                 </button>
               </div>
 
@@ -187,8 +187,8 @@ const User = ({ history }) => {
                     duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm 
                     focus:shadow-outline mt-5'
                 >
-                  <i className='fas fa-sign-in-alt fa 1x w-6 -ml-2 text-indigo-500' />
-                  <span className='ml-4'>Home</span>
+                  <i className='fas fa-sign-in-alt fa 1x w-5 text-indigo-500' />
+                  <span className='ml-1'>Home</span>
                 </Link>
               </div>
             </form>

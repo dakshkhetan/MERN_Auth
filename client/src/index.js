@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 
 import App from './App';
 
@@ -45,6 +45,7 @@ ReactDOM.render(
       />
       <UserRoute path='/private' exact passedComponent={User} />
       <AdminRoute path='/admin' exact passedComponent={Admin} />
+      <Redirect to='/' />
     </Switch>
   </BrowserRouter>,
   document.getElementById('root')
