@@ -1,8 +1,8 @@
 import cookie from 'js-cookie';
 
-// set Cookie
+// set cookie
 export const setCookie = (key, value) => {
-  if (window !== 'undefiend') {
+  if (window !== 'undefined') {
     cookie.set(key, value, {
       // 1 Day
       expires: 1
@@ -54,12 +54,10 @@ export const authenticate = (response, next) => {
 export const isAuth = () => {
   if (window !== 'undefined') {
     const cookieChecked = getCookie('token');
-    if (cookieChecked) {
-      if (localStorage.getItem('user')) {
-        return JSON.parse(localStorage.getItem('user'));
-      } else {
-        return false;
-      }
+    if (cookieChecked && localStorage.getItem('user')) {
+      return JSON.parse(localStorage.getItem('user'));
+    } else {
+      return false;
     }
   }
 };

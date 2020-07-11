@@ -5,7 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { GoogleLogin } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 
-import authSvg from '../assets/auth.svg';
+import registerSvg from '../assets/auth.svg';
 import { authenticate, isAuth } from '../helpers/auth';
 
 const Register = ({ history }) => {
@@ -255,7 +255,7 @@ const Register = ({ history }) => {
         <div className='flex-1 bg-indigo-100 text-center hidden lg:flex'>
           <div
             className='m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat'
-            style={{ backgroundImage: `url(${authSvg})` }}
+            style={{ backgroundImage: `url(${registerSvg})` }}
           ></div>
         </div>
       </div>

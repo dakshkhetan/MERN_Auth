@@ -6,7 +6,7 @@ const cors = require('cors');
 
 const app = express();
 
-// config dotenv
+// config .env
 require('dotenv').config({
   path: './config/config.env'
 });
@@ -15,9 +15,6 @@ require('dotenv').config({
 connectDB();
 
 app.use(bodyParser.json());
-
-const authRouter = require('./routes/auth.route');
-const userRouter = require('./routes/user.route');
 
 // dev middleware
 if (process.env.NODE_ENV === 'development') {
@@ -28,6 +25,9 @@ if (process.env.NODE_ENV === 'development') {
   );
   app.use(morgan('dev'));
 }
+
+const authRouter = require('./routes/auth.route');
+const userRouter = require('./routes/user.route');
 
 app.use('/api', authRouter);
 app.use('/api', userRouter);

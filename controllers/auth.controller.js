@@ -1,4 +1,4 @@
-const User = require('../models/auth.model');
+const User = require('../models/user.model');
 
 const expressJwt = require('express-jwt');
 const jwt = require('jsonwebtoken');
@@ -418,7 +418,7 @@ exports.facebookController = (req, res) => {
       .then((response) => response.json())
       // .then(response => console.log(response))
       .then((response) => {
-        console.log(response);
+        console.log('FACEBOOK LOGIN RESPONSE', response);
         const { email, name } = response;
 
         // check if email already exists in database
