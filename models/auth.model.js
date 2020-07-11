@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const crypto = require('crypto');
 
 // user schema
-const userScheama = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     email: {
       type: String,
@@ -36,7 +36,7 @@ const userScheama = new mongoose.Schema(
 );
 
 // virtual
-userScheama
+userSchema
   .virtual('password')
   .set(function (password) {
     this._password = password;
@@ -48,7 +48,7 @@ userScheama
   });
 
 // methods
-userScheama.methods = {
+userSchema.methods = {
   makeSalt: function () {
     return Math.round(new Date().valueOf() * Math.random()) + '';
   },
@@ -70,4 +70,4 @@ userScheama.methods = {
   }
 };
 
-module.exports = mongoose.model('User', userScheama);
+module.exports = mongoose.model('User', userSchema);
